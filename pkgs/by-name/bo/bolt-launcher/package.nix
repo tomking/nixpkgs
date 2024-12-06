@@ -106,17 +106,18 @@ let
       copyDesktopItems
     ];
 
-    buildInputs = [
-      mesa
-      xorg.libX11
-      xorg.libxcb
-      libarchive
-      libz
-      cef
-    ]
-    ++ lib.optionals enableHDOSAndRuneLite [
-      jdk17
-    ];
+    buildInputs =
+      [
+        mesa
+        xorg.libX11
+        xorg.libxcb
+        libarchive
+        libz
+        cef
+      ]
+      ++ lib.optionals enableHDOSAndRuneLite [
+        jdk17
+      ];
 
     cmakeFlags = [
       "-D CMAKE_BUILD_TYPE=Release"
@@ -184,10 +185,13 @@ buildFHSEnv {
       SDL2
       libGL
     ])
-    ++ lib.optionals enableRS3 (with pkgs; [
-      gtk2-x11
-      openssl_1_1
-    ]);
+    ++ lib.optionals enableRS3 (
+      with pkgs;
+      [
+        gtk2-x11
+        openssl_1_1
+      ]
+    );
 
   extraInstallCommands = ''
     mkdir -p $out/share/applications
