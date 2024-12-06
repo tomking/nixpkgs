@@ -28,6 +28,8 @@
   cups,
   systemd,
   buildFHSEnv,
+  makeDesktopItem,
+  copyDesktopItems,
   enableRS3 ? false,
   enableHDOSAndRuneLite ? false,
   jdk17 ? null,
@@ -101,6 +103,7 @@ let
       ninja
       luajit
       makeWrapper
+      copyDesktopItems
     ];
 
     buildInputs = [
@@ -142,7 +145,23 @@ let
       ${lib.optionalString enableHDOSAndRuneLite "--set JAVA_HOME ${jdk17}"}
       mkdir -p $out/lib
       cp $out/usr/local/lib/libbolt-plugin.so $out/lib
+      mkdir -p $out/share/icons/hicolor/256x256/apps
+      cp ../icon/256.png $out/share/icons/hicolor/256x256/apps/${finalAttrs.pname}.png
     '';
+
+    desktopItems = [
+      (makeDesktopItem {
+        type = "Application";
+        terminal = false;
+        name = "Bolt";
+        desktopName = "Bolt Launcher";
+        genericName = finalAttrs.pname;
+        comment = "An alternative launcher for RuneScape";
+        exec = "${finalAttrs.pname}-${finalAttrs.version}";
+        icon = finalAttrs.pname;
+        categories = [ "Game" ];
+      })
+    ];
   });
 in
 buildFHSEnv {
@@ -170,7 +189,17 @@ buildFHSEnv {
       openssl_1_1
     ]);
 
+  extraInstallCommands = ''
+    mkdir -p $out/share/applications
+    mkdir -p $out/share/icons/hicolor/256x256/apps
+
+    ln -s ${bolt}/share/applications/*.desktop $out/share/applications/
+
+    ln -s ${bolt}/share/icons/hicolor/256x256/apps/*.png $out/share/icons/hicolor/256x256/apps/
+  '';
+
   runScript = "${bolt.name}";
+
   meta = {
     homepage = "https://github.com/Adamcake/Bolt";
     description = "An alternative launcher for RuneScape.";
