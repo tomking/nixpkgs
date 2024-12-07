@@ -20,6 +20,7 @@
   expat,
   libxkbcommon,
   gtk3,
+  jdk17,
   pango,
   cairo,
   alsa-lib,
@@ -31,8 +32,6 @@
   makeDesktopItem,
   copyDesktopItems,
   enableRS3 ? false,
-  enableHDOSAndRuneLite ? false,
-  jdk17 ? null,
 }:
 let
   cef = libcef.overrideAttrs (oldAttrs: {
@@ -114,8 +113,6 @@ let
         libarchive
         libz
         cef
-      ]
-      ++ lib.optionals enableHDOSAndRuneLite [
         jdk17
       ];
 
@@ -143,7 +140,7 @@ let
 
     postFixup = ''
       makeWrapper "$out/opt/bolt-launcher/bolt" "$out/bin/${finalAttrs.pname}-${finalAttrs.version}" \
-      ${lib.optionalString enableHDOSAndRuneLite "--set JAVA_HOME ${jdk17}"}
+      --set JAVA_HOME ${jdk17}
       mkdir -p $out/lib
       cp $out/usr/local/lib/libbolt-plugin.so $out/lib
       mkdir -p $out/share/icons/hicolor/256x256/apps
@@ -208,8 +205,7 @@ buildFHSEnv {
     homepage = "https://github.com/Adamcake/Bolt";
     description = "An alternative launcher for RuneScape.";
     longDescription = ''
-      Bolt Launcher supports RS3 and HDOS/RuneLite through optional feature flags.
-      Use enableRS3 to include dependencies for RS3, and enableHDOSAndRuneLite for HDOS/RuneLite support.
+      Bolt Launcher supports HDOS/RuneLite by default with an optional feature flag for RS3 (enableRS3).
     '';
     license = lib.licenses.agpl3Plus;
     maintainers = with lib.maintainers; [ nezia ];
