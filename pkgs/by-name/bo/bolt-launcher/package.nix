@@ -105,16 +105,15 @@ let
       copyDesktopItems
     ];
 
-    buildInputs =
-      [
-        mesa
-        xorg.libX11
-        xorg.libxcb
-        libarchive
-        libz
-        cef
-        jdk17
-      ];
+    buildInputs = [
+      mesa
+      xorg.libX11
+      xorg.libxcb
+      libarchive
+      libz
+      cef
+      jdk17
+    ];
 
     cmakeFlags = [
       "-D CMAKE_BUILD_TYPE=Release"
